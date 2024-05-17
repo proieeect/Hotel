@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class HotelResponseDto {
-    private int id;
+    private Long id;
     private String hotelName;
     public static HotelResponseDto map(Hotel hotel){
         return HotelResponseDto.builder()

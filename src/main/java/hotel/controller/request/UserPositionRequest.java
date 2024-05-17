@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPositionRequest {
-    private double latitude;
-    private double longitudine;
-    private double radius;
+    private Long latitude;
+    private Long longitudine;
+    private Long radius;
 }
