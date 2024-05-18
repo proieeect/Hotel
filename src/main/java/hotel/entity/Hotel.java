@@ -20,4 +20,11 @@ public class Hotel {
     private Long longitude;
     @OneToMany(mappedBy = "hotel")
     private List<Room> rooms;
+
+    public Hotel(String name, Long latitude, Long longitude, List<Room> rooms) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.rooms = rooms;
+    }
 }

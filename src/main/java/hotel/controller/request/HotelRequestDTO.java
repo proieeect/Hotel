@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPositionRequest {
+public class HotelRequestDTO {
+    private String name;
     private Long latitude;
     private Long longitude;
-    private Long radius;
+    private List<RoomRequestDTO> rooms;
 }

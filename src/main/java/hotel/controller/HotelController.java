@@ -1,5 +1,6 @@
 package hotel.controller;
 
+import hotel.controller.request.HotelRequestDTO;
 import hotel.controller.request.UserPositionRequest;
 import hotel.controller.response.HotelResponseDto;
 import hotel.entity.Hotel;
@@ -12,29 +13,35 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("Hotel")
-@RestController("/hotels")
+@RequestMapping( "/hotels")
+@RestController
 public class HotelController {
     @Autowired
     private HotelService hotelService;
 
     //dropdown
     @PostMapping(value = "/position")
-    public ResponseEntity<List<HotelResponseDto>> getHotelsByUserPosition(@RequestBody UserPositionRequest userPositionRequest, @PathVariable Long userRadiusPreference) {
-        return new ResponseEntity<>(hotelService.getHotelsByCoordinates(userPositionRequest, userRadiusPreference), HttpStatus.OK);
+    public ResponseEntity<List<HotelResponseDto>> getHotelsByUserPosition(@RequestBody UserPositionRequest userPositionRequest) {
+        return new ResponseEntity<>(hotelService.getHotelsByCoordinates(userPositionRequest), HttpStatus.OK);
     }
 
+    // nu mai deschid modala
     @GetMapping(value = "/{id}")
     public ResponseEntity<HotelResponseDto> getHotelsById(@PathVariable Long id) {
         return new ResponseEntity<>(hotelService.getHotelByID(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/type-rooms/{id}")
+    public ResponseEntity<String[]> getRoomsTypeForHotel(@PathVariable Long id) {
+        return new ResponseEntity<>(hotelService.getRoomsTypeForHotel(id), HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Hotel> createHotel(@RequestBody Hotel hotel) {
+    public ResponseEntity<Hotel> createHotel(@RequestBody HotelRequestDTO hotel) {
         return new ResponseEntity<>(hotelService.createHotel(hotel), HttpStatus.CREATED);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<Boolean> cancelBooking(@PathVariable("id") Long id) {
         if (hotelService.cancelBooking(id)!=true) {
             return new ResponseEntity<>(hotelService.cancelBooking(id), HttpStatus.BAD_REQUEST);

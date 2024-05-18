@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPositionRequest {
-    private Long latitude;
-    private Long longitude;
-    private Long radius;
+public class RoomRequestDTO {
+    private String type;
+    private Long price;
+    private Boolean isAvailable;
+    private Integer roomNumber;
 }
