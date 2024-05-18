@@ -18,6 +18,13 @@ public class Hotel {
     private String name;
     private Long latitude;
     private Long longitude;
-    @OneToMany(mappedBy = "hotel")
+    @OneToMany(mappedBy = "hotel",cascade = CascadeType.ALL)
     private List<Room> rooms;
+
+    public Hotel(String name, Long latitude, Long longitude, List<Room> rooms) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.rooms = rooms;
+    }
 }

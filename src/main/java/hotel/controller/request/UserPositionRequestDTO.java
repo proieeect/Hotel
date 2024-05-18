@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPositionRequest {
+public class UserPositionRequestDTO {
     private Long latitude;
-    private Long longitudine;
+    private Long longitude;
     private Long radius;
 }

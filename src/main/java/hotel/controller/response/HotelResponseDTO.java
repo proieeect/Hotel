@@ -8,11 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HotelResponseDto {
+public class HotelResponseDTO {
     private Long id;
     private String hotelName;
-    public static HotelResponseDto map(Hotel hotel){
-        return HotelResponseDto.builder()
+    public static HotelResponseDTO map(Hotel hotel){
+        return HotelResponseDTO.builder()
                 .id(hotel.getId())
                 .hotelName(builder().hotelName)
                 .build();

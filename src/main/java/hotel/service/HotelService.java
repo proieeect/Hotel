@@ -1,9 +1,11 @@
 package hotel.service;
 
-import hotel.controller.request.UserPositionRequest;
-import hotel.controller.response.HotelResponseDto;
+import hotel.controller.request.HotelRequestDTO;
+import hotel.controller.request.UserPositionRequestDTO;
+import hotel.controller.response.HotelResponseDTO;
 import hotel.entity.Book;
 import hotel.entity.Hotel;
+import hotel.entity.Room;
 import hotel.repository.BookRepository;
 import hotel.repository.HotelRepository;
 import jakarta.transaction.Transactional;
@@ -23,56 +25,43 @@ public class HotelService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<HotelResponseDto> getHotelsByCoordinates(UserPositionRequest userPositionRequest, Long userRadiusPreference) {
-        Long userLatitude = userPositionRequest.getLatitude();
-        Long userLongitude = userPositionRequest.getLongitudine();
+    public List<HotelResponseDTO> getHotelsByCoordinates(UserPositionRequestDTO userPositionRequestDTO) {
+        Long userLatitude = userPositionRequestDTO.getLatitude();
+        Long userLongitude = userPositionRequestDTO.getLongitude();
 
-        List<Hotel> filteredHotels = hotelRepository.findAll().stream().filter(e -> userLatitude.equals(e.getLatitude()) &&
-                userLongitude.equals(e.getLongitude())).collect(Collectors.toList());
+        List<Hotel> filteredHotels = hotelRepository.findAll().stream().toList();
 
-        Long hotelLatitude = Long.valueOf(0);
-        Long hotelLongitude = Long.valueOf(0);
-        Long distanceBetweenUserAndHotel = convertPositionsBetweenUserAndHotel(userLatitude, userLongitude, hotelLatitude, hotelLongitude);
-        List<HotelResponseDto> newListFiltered = new ArrayList<>();
-        if (distanceBetweenUserAndHotel <= userRadiusPreference) {
-            List<Hotel> hotelList = hotelRepository.findByName(getHotelByID(filteredHotels.stream().findAny().get().getId()).getHotelName());
-            for (Hotel oneHotel : hotelList) {
-                HotelResponseDto hotelResponseDto = new HotelResponseDto(oneHotel.getId(), oneHotel.getName());
-                newListFiltered.add(hotelResponseDto);
+        List<HotelResponseDTO> newListFiltered = new ArrayList<>();
+        for (Hotel oneHotel : filteredHotels) {
+            Long distanceBetweenUserAndHotel = convertPositionsBetweenUserAndHotel(userLatitude, userLongitude, oneHotel.getLatitude(), oneHotel.getLongitude());
+            if (distanceBetweenUserAndHotel <= (long) (userPositionRequestDTO.getRadius()*0.001)){
+                HotelResponseDTO hotelResponseDTO = new HotelResponseDTO(oneHotel.getId(), oneHotel.getName());
+                newListFiltered.add(hotelResponseDTO);
             }
         }
-
-        // convert in m user position
-//        double userM = 10;
-        // convert in m hotel position
-//        Map<String, Long[]> meters = new HashMap<>();
-//        hotelRepository.findAll().forEach(
-//                e -> {
-//                    meters.put(e.getName(), generateHotelPositionInMeter(e.getLatitude(), e.getLongitude()));
-//                }
-//        );
-
-//         logica lu narcis parcurgi hotelM +
-//        List<HotelResponseDto> list = new ArrayList<>();
-//        lista.add(new HotelResponseDto(hotelRepository.findByName(), hotelRepository.findByName(name)) )
-//        return list;
-//        lista.stream().anyMatch(e->e.getId()==meters.keySet().)
-//        if (meters.keySet().contains(list.stream().findAny())) {
-//
-//        }
-//               &&(userPositionRequest.getRadius()<=meters.keySet().iterator())
         return newListFiltered;
     }
 
-    public HotelResponseDto getHotelByID(Long id) {
-        return HotelResponseDto.map(hotelRepository.findById(id).get());
+    public HotelResponseDTO getHotelByID(Long id) {
+        return HotelResponseDTO.map(hotelRepository.findById(id).get());
     }
 
     @Transactional
-    public Hotel createHotel(Hotel hotel) {
+    public Hotel createHotel(HotelRequestDTO hotelRequestDTO) {
         //daca nu trebuie sa crrezi repository room si sa le salvezi mai intai rooms
         //hotel.getLiSTArOOM().forEach(rommRepository.save(room))
-        return hotelRepository.save(hotel); // rooms se salveaza?
+        List<Room> rooms = new ArrayList<>();
+
+        hotelRequestDTO.getRooms().stream().forEach(
+                e -> {
+                    Room room = Room.map(e);
+                    rooms.add(room);
+                }
+        );
+
+        Hotel hotel = new Hotel(hotelRequestDTO.getName(), hotelRequestDTO.getLatitude(), hotelRequestDTO.getLongitude(), rooms);
+        return hotelRepository.save(hotel);
+
     }
 
     public boolean cancelBooking(Long id) {
@@ -98,54 +87,4 @@ public class HotelService {
 
 
     }
-
-
-//    private Long[] generateHotelPositionInMeter(Long latitude, Long longitude) {
-//        Long[] meters = new Long[2];
-//
-//        // Raza ecuatorială a elipsoidului WGS84 (m)
-//        Long a = Math.round(6378137.0);
-//        // Aplatisarea elipsoidului WGS84
-//        Long f = Math.round(1 / 298.257223563);
-//
-//        Long phi = Math.round(Math.toRadians(latitude));
-//        Long lambda = Math.round(Math.toRadians(longitude));
-//
-//        Long sinPhi = Math.round(Math.sin(phi));
-//        Long e2 = f * (2 - f);
-//        Long N = Math.round(a / Math.sqrt(1 - e2 * sinPhi * sinPhi));
-//
-//        Long x = Math.round(N * Math.cos(phi) * Math.cos(lambda));
-//        Long y = Math.round(N * Math.cos(phi) * Math.sin(lambda));
-//
-//        meters[0] = x;
-//        meters[1] = y;
-//
-//        return meters;
-//    }
-
-//    private Long[] generateUserPositionInMeter(long latitude, long longitude) {
-//        Long[] meters = new Long[2];
-//
-//        // Raza ecuatorială a elipsoidului WGS84 (m)
-//        Long a = Math.round(6378137.0);
-//        // Aplatisarea elipsoidului WGS84
-//        Long f = Math.round(1 / 298.257223563);
-//
-//        Long phi = Math.round(Math.toRadians(latitude));
-//        Long lambda = Math.round(Math.toRadians(longitude));
-//
-//        Long sinPhi = Math.round(Math.sin(phi));
-//        Long e2 = f * (2 - f);
-//        Long N = Math.round(a / Math.sqrt(1 - e2 * sinPhi * sinPhi));
-//
-//        Long x = Math.round(N * Math.cos(phi) * Math.cos(lambda));
-//        Long y = Math.round(N * Math.cos(phi) * Math.sin(lambda));
-//
-//        meters[0] = x;
-//        meters[1] = y;
-//
-//        return meters;
-//    }
-
 }
