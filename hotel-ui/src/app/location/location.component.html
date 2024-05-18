@@ -1,0 +1,49 @@
+<div class="container">
+  <h2>Your Location</h2>
+  <p *ngIf="userLatitude && userLongitude">
+    Latitude: {{ userLatitude }} | Longitude: {{ userLongitude }}
+  </p>
+
+
+  <h2>Hotels Near You</h2>
+
+  <select [(ngModel)]="selectedRadius" (ngModelChange)="fetchHotels()">
+    <option value="" disabled selected>Select a Radius (km)</option>
+    <option *ngFor="let radius of availableRadii" [value]="radius">
+      {{ radius }}km
+    </option>
+  </select>
+
+  <h2>Hotels</h2>
+
+  <select [(ngModel)]="selectedHotelId" (ngModelChange)="onHotelChange($event)" [disabled]="selectedRadius === null">
+    <option value="" disabled selected>Select a Hotel</option>
+    <option *ngFor="let hotel of hotels" [value]="hotel.id">
+      {{ hotel.hotelName }} - {{ hotel.id }}km
+    </option>
+  </select>
+
+  <h2>Hotel Room Types</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Room Type</th>
+      <th>Quantity (nr)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="roomTypes.length > 0">  <tr *ngFor="let roomType of roomTypes">
+      <td>{{ roomType }}</td>  <td></td>
+    </tr>
+    <tr *ngIf="roomTypes.length === 0">  <td>No room types available</td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <input type="number" [(ngModel)]="bookingId">
+  <button (click)="cancelBooking(bookingId)">Cancel Booking</button>
+
+
+</div>

@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:14.5-alpine
+    container_name: dbApp
+    restart: always
+    environment:
+      - POSTGRES_USER=hotel_user
+      - POSTGRES_PASSWORD=hotelpass
+      - POSTGRES_DB=hotel_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:

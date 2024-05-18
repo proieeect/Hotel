@@ -1,0 +1,9 @@
+/* In your global CSS file or a dedicated component CSS file */
+
+.confirmation-window {
+  /* Styles for the confirmation window (e.g., border, padding) */
+}
+
+.confirmation-window p {
+  /* Styles for the message paragraph (e.g., font size, color) */
+}
