@@ -1,9 +1,5 @@
 package hotel.service;
 
-import java.util.Properties;
-
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

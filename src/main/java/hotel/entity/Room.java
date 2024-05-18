@@ -16,13 +16,11 @@ public class Room {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private String type;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_room_id")
     private Hotel hotel;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fk_room_reservation_id")
     private Book book;
